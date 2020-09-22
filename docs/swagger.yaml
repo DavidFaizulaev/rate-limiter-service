@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Rate limiter service
+  description: The service accepts http requests and returns `true/false` depending if request rate limit was exceeded.
+tags:
+  - name: Visit
+    description: >-
+      Endpoint which returns `true/false` depending if request rate limit was exceeded. 
+paths:
+  /visit:
+    post:
+      description: Create a risk analyses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/visit_request_body'
+        required: true
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/visit_response'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_model'
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_model'
+
+components:
+  schemas:
+    visit_request_body:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+     
+    visit_response:
+      type: object
+      required:
+        - throttled
+      properties:
+        throttled:
+          type: boolean      
+
+    error_model:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Error message.
